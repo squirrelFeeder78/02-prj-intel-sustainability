@@ -9,19 +9,22 @@ body {
 
 /* Hero section with blue gradient, large size, bottom-left text */
 .hero {
-  background: linear-gradient(135deg, #0068b5 0%, #00aee6 100%); /* Intel blue gradient */
+  background: linear-gradient(135deg, #0068b5 0%, #00aee6 100%);
   color: #fff;
-  min-height: 60vh; /* Make hero take up 66% of the viewport height */
-  display: flex; /* Use flexbox to position content */
-  align-items: flex-end; /* Move content to the bottom */
-  justify-content: flex-start; /* Align content to the left */
-  text-align: left; /* Left align text */
-  padding: 0; /* Remove default padding, use margin on content */
+  min-height: 60vh;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 0;
+  width: 100%; /* Changed from 100vw to 100% */
+  box-sizing: border-box;
+  margin: 0;
 }
 
 .hero-content {
   max-width: 600px;
-  margin: 0 0 60px 80px; /* Space from left and bottom */
+  margin: 0 0 60px 80px;
 }
 
 .hero-logo {
@@ -31,10 +34,12 @@ body {
 
 /* Navigation bar styles */
 .navbar {
-  background: #003057; /* Intel dark blue */
+  background: #003057;
   color: #fff;
   padding: 0;
-  width: 100%;
+  width: 100%; /* Changed from 100vw to 100% */
+  box-sizing: border-box;
+  margin: 0;
 }
 
 .navbar-content {
@@ -125,46 +130,80 @@ body {
   }
 }
 
-/* Timeline section uses flexbox to lay out cards */
+/* Timeline section uses flexbox to lay out cards horizontally and allows horizontal scrolling */
 .timeline {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  width: 1200px;
+  max-width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  align-items: center;
+  justify-content: flex-start;
   gap: 24px;
-  padding: 32px 16px;
+  padding: 32px 32px;
+  background: #f4f8fb;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #b0c4de #f4f8fb;
+
+  /* Enable scroll snap for horizontal scrolling */
+  scroll-snap-type: x proximity; /* Snap to the start of each card */
+}
+.timeline::-webkit-scrollbar {
+  height: 8px;
+}
+.timeline::-webkit-scrollbar-thumb {
+  background: #b0c4de;
+  border-radius: 4px;
+}
+.timeline::-webkit-scrollbar-track {
   background: #f4f8fb;
 }
 
-/* Each timeline card */
+/* Each timeline card will snap to the start when scrolling */
 .timeline-card {
   width: 250px;
-  /* Add a little shadow and rounded corners */
+  flex: 0 0 250px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  /* Add a subtle shadow to make cards stand out */
+  box-shadow: 0 2px 12px rgba(0, 56, 128, 0.10), 0 1.5px 4px rgba(0,0,0,0.08);
   background: #fff;
   overflow: hidden;
-  transition: transform 0.2s;
+  /* Smooth transition for transform and shadow */
+  transition: 
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
+
+  /* Add scroll snap alignment */
+  scroll-snap-align: start; /* Snap this card to the start of the container */
 }
 
+/* When you hover over a card, it lifts up and the shadow gets stronger */
 .timeline-card:hover {
-  transform: translateY(-6px) scale(1.03);
+  transform: translateY(-12px) scale(1.05) rotateZ(-1deg);
+  /* Stronger shadow on hover for a "lifted" effect */
+  box-shadow: 0 8px 28px rgba(0, 56, 128, 0.18), 0 2px 8px rgba(0,0,0,0.12);
 }
 
 /* Container for image and overlay description */
 .card-image-container {
   position: relative;
   width: 100%;
-  height: 220px; /* Increased from 180px to 220px for more space */
+  height: 220px;
   overflow: hidden;
 }
 
-/* Card image fills the container */
 .card-image-container img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: height 0.2s, width 0.2s;
 }
 
 /* Description overlay - hidden by default */
@@ -174,7 +213,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(10, 39, 64, 0.92); /* Semi-transparent overlay */
+  background: rgba(10, 39, 64, 0.92);
   color: #fff;
   opacity: 0;
   transition: opacity 0.3s;
@@ -187,25 +226,22 @@ body {
   text-align: center;
 }
 
-/* Show description on hover */
 .card-image-container:hover .card-description {
   opacity: 1;
 }
 
-/* Hide h2 and h3 outside overlay for accessibility */
 .timeline-card h2,
 .timeline-card h3,
 .timeline-card p {
   display: none;
 }
 
-/* Show h2, h3, p inside overlay */
 .card-description h2,
 .card-description h3,
 .card-description p {
   display: block;
   margin: 0 0 8px 0;
-  font-size: 0.95em; /* Make text inside the image overlay slightly smaller */
+  font-size: 0.95em;
 }
 
 /* Small note below timeline */
@@ -255,26 +291,50 @@ body {
   margin-left: 12px;
 }
 
-/* Responsive: stack cards and adjust hero content on small screens */
+/* Responsive: stack cards vertically and make hero/nav full width, images and text smaller */
 @media (max-width: 700px) {
+  .navbar,
+  .hero {
+    width: 100vw; /* Ensure full width on small screens */
+    min-width: 0;
+  }
   .timeline {
     flex-direction: column;
     align-items: center;
+    width: 100vw;
+    max-width: 100vw;
+    padding: 24px 0;
+    overflow-x: visible;
+
+    /* Remove scroll snap on small screens (vertical layout) */
+    scroll-snap-type: none;
   }
   .timeline-card {
-    width: 90%;
+    width: 90vw;
     max-width: 320px;
+    flex: 1 1 auto;
+
+    /* Remove scroll snap on small screens */
+    scroll-snap-align: none;
+  }
+  .card-image-container {
+    height: 160px; /* Smaller images on small screens */
+  }
+  .card-description h2,
+  .card-description h3,
+  .card-description p {
+    font-size: 0.9em; /* Smaller text in overlay */
   }
   .hero-content {
-    margin: 0 0 32px 16px; /* Less space on small screens */
+    margin: 0 0 32px 16px;
     padding: 0 8px;
   }
 }
 
-/* Make all text smaller on very small screens */
+/* Make all text and images even smaller on very small screens */
 @media (max-width: 500px) {
   body {
-    font-size: 0.9em; /* Make body text smaller */
+    font-size: 0.9em;
   }
   h1 {
     font-size: 1.3em;
@@ -291,7 +351,19 @@ body {
     font-size: 0.9em;
   }
   .hero-content {
-    margin: 0 0 24px 8px; /* Reduce left/bottom margin for hero text */
+    margin: 0 0 24px 8px;
     padding: 0 4px;
+  }
+  .timeline-card {
+    max-width: 98vw;
+    width: 98vw;
+  }
+  .card-image-container {
+    height: 120px; /* Even smaller images */
+  }
+  .card-description h2,
+  .card-description h3,
+  .card-description p {
+    font-size: 0.85em;
   }
 }
